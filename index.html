@@ -6,7 +6,7 @@
 <title>KeyForge — Your API Billing Dashboard</title>
 <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
 <style>
-/* ── Reset & base ───────────────────────────────────────────── */
+
 *{box-sizing:border-box;margin:0;padding:0}
 :root{
   --white:#FFFFFF;
@@ -36,8 +36,6 @@
   --font-body:'Nunito Sans',sans-serif;
 }
 body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;min-height:100vh}
-
-/* ── Topbar ─────────────────────────────────────────────────── */
 .topbar{display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;background:var(--white);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:100}
 .logo{font-family:var(--font);font-size:20px;font-weight:800;color:var(--blue);display:flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none}
 .logo-icon{width:34px;height:34px;background:var(--blue);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
@@ -48,13 +46,11 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .nav-link:hover{color:var(--blue);background:var(--blue-light)}
 .btn-nav{background:var(--blue);color:#fff;font-family:var(--font);font-size:14px;font-weight:700;padding:8px 20px;border-radius:var(--radius-sm);border:none;cursor:pointer;transition:all .15s}
 .btn-nav:hover{background:#3558e8;transform:translateY(-1px)}
-
-/* ── Pages ───────────────────────────────────────────────────── */
 .page{display:none;animation:fadeUp .25s ease}
 .page.active{display:block}
 @keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
 
-/* ── Auth pages ──────────────────────────────────────────────── */
+
 .auth-outer{min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:2rem;background:linear-gradient(160deg,var(--blue-light) 0%,var(--bg) 60%)}
 .auth-box{width:100%;max-width:460px;background:var(--white);border-radius:20px;padding:2.5rem;box-shadow:0 8px 40px rgba(74,108,247,0.12)}
 .auth-emoji{font-size:42px;margin-bottom:12px;display:block;text-align:center}
@@ -76,7 +72,7 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .alt-btn{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);padding:11px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;color:var(--text2);transition:all .15s;margin-top:8px}
 .alt-btn:hover{border-color:var(--blue-mid);color:var(--blue);background:var(--blue-light)}
 
-/* Plan picker */
+
 .plan-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
 .plan-card{border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px 10px;text-align:center;cursor:pointer;transition:all .15s;background:var(--bg)}
 .plan-card:hover{border-color:var(--blue-mid);background:var(--blue-light)}
@@ -85,10 +81,9 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .plan-card .plan-name{font-family:var(--font);font-size:13px;font-weight:800;color:var(--text);margin-bottom:2px}
 .plan-card .plan-price{font-size:11px;color:var(--text2)}
 
-/* ── Dashboard layout ────────────────────────────────────────── */
+
 .dash-wrap{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 64px)}
 
-/* Sidebar */
 .sidebar{background:var(--white);border-right:2px solid var(--border);padding:1.2rem;display:flex;flex-direction:column;gap:4px}
 .sidebar-section{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:8px 10px 4px;font-family:var(--font)}
 .slink{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:600;color:var(--text2);border:none;background:none;width:100%;font-family:var(--font);text-align:left;transition:all .15s}
@@ -101,18 +96,18 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .sidebar-user-name{font-size:13px;font-weight:700;color:var(--text);font-family:var(--font)}
 .sidebar-user-email{font-size:11px;color:var(--text3)}
 
-/* Main content */
+
 .main{padding:2rem;overflow-y:auto;max-height:calc(100vh - 64px)}
 .dash-section{display:none}
 .dash-section.on{display:block}
 
-/* Page header */
+
 .page-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.8rem}
 .page-hdr-left
 .page-hdr-title{font-family:var(--font);font-size:22px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px}
 .page-hdr-sub{font-size:13px;color:var(--text2);margin-top:3px}
 
-/* ── Stat cards ──────────────────────────────────────────────── */
+
 .stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:1.6rem}
 .stat-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:1.6rem}
 .scard{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:1.2rem 1.4rem;transition:box-shadow .15s}
@@ -127,7 +122,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .scard-val.amber{color:var(--amber)}
 .scard-val.purple{color:var(--purple)}
 
-/* ── Usage bar ───────────────────────────────────────────────── */
 .usage-wrap{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:1.4rem;margin-bottom:1.6rem}
 .usage-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
 .usage-title{font-family:var(--font);font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px}
@@ -139,7 +133,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .usage-labels{display:flex;justify-content:space-between;margin-top:6px;font-size:12px;color:var(--text3)}
 .usage-tip{margin-top:10px;background:var(--amber-light);border:1.5px solid #fde68a;border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:#92400e;display:none;align-items:center;gap:6px}
 
-/* ── Chart ───────────────────────────────────────────────────── */
 .chart-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:1.4rem;margin-bottom:1.6rem}
 .chart-title{font-family:var(--font);font-size:14px;font-weight:700;color:var(--text);margin-bottom:1rem}
 .bar-row{display:flex;align-items:flex-end;gap:8px;height:90px}
@@ -148,7 +141,6 @@ body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-si
 .bar-labels{display:flex;gap:8px;margin-top:8px}
 .bar-lbl{flex:1;text-align:center;font-size:11px;color:var(--text3);font-family:var(--font)}
 
-/* ── Tables ───────────────────────────────────────────────────── */
 .table-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1.6rem}
 .table-head-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 12px;border-bottom:2px solid var(--border)}
 .table-head-title{font-family:var(--font);font-size:15px;font-weight:800;color:var(--text)}
@@ -158,15 +150,13 @@ td{padding:13px 18px;font-size:14px;color:var(--text2);border-top:1px solid var(
 tr:hover td{background:var(--bg)}
 .mono{font-family:'Courier New',monospace;font-size:12px;color:var(--text)}
 
-/* Badges */
+
 .badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:99px;font-size:12px;font-weight:700;font-family:var(--font)}
 .badge-green{background:var(--green-light);color:#16a34a}
 .badge-red{background:var(--red-light);color:#dc2626}
 .badge-amber{background:var(--amber-light);color:#b45309}
 .badge-blue{background:var(--blue-light);color:var(--blue)}
 .badge-purple{background:var(--purple-light);color:var(--purple)}
-
-/* ── Buttons ──────────────────────────────────────────────────── */
 .btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:var(--radius-sm);padding:9px 16px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
 .btn-blue{background:var(--blue);color:#fff}
 .btn-blue:hover{background:#3558e8;transform:translateY(-1px)}
@@ -177,7 +167,7 @@ tr:hover td{background:var(--bg)}
 .btn-green{background:var(--green-light);border:1.5px solid #86efac;color:#16a34a}
 .btn-green:hover{background:#dcfce7}
 
-/* ── Key cards ────────────────────────────────────────────────── */
+
 .key-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:1.2rem 1.4rem;margin-bottom:12px;transition:box-shadow .15s}
 .key-card:hover{box-shadow:var(--shadow)}
 .key-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
@@ -189,7 +179,7 @@ tr:hover td{background:var(--bg)}
 .key-meta-item{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:4px}
 .key-actions{display:flex;gap:8px}
 
-/* ── Invoice cards ────────────────────────────────────────────── */
+
 .inv-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:1.4rem;margin-bottom:12px}
 .inv-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;padding-bottom:1rem;border-bottom:2px solid var(--border)}
 .inv-id{font-family:var(--font);font-size:14px;font-weight:800;color:var(--text)}
@@ -203,7 +193,7 @@ tr:hover td{background:var(--bg)}
 .pay-btn:hover{background:#16a34a;transform:translateY(-1px)}
 .pay-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
 
-/* ── Admin user rows ──────────────────────────────────────────── */
+
 .user-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:1.2rem 1.4rem;margin-bottom:12px;transition:box-shadow .15s}
 .user-card:hover{box-shadow:var(--shadow)}
 .user-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px}
@@ -221,7 +211,7 @@ tr:hover td{background:var(--bg)}
 .limit-input:focus{border-color:var(--blue)}
 .user-actions{display:flex;gap:8px}
 
-/* ── Modals ───────────────────────────────────────────────────── */
+
 .modal-bg{display:none;position:fixed;inset:0;background:rgba(30,34,53,0.5);z-index:300;align-items:center;justify-content:center;padding:1rem}
 .modal-bg.open{display:flex}
 .modal-box{background:var(--white);border-radius:20px;padding:2rem;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(30,34,53,0.2);animation:popIn .2s ease}
@@ -233,7 +223,7 @@ tr:hover td{background:var(--bg)}
 .modal-warn{background:var(--amber-light);border:1.5px solid #fde68a;border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:#92400e;margin-bottom:1.2rem;display:flex;align-items:flex-start;gap:8px}
 .modal-btns{display:flex;gap:10px;justify-content:flex-end}
 
-/* Upgrade modal */
+
 .upgrade-box{background:var(--white);border-radius:20px;padding:2rem;width:100%;max-width:520px;box-shadow:0 20px 60px rgba(30,34,53,0.2);animation:popIn .2s ease}
 .upgrade-top{text-align:center;margin-bottom:1.4rem}
 .upgrade-alert{background:var(--red-light);border:1.5px solid #fca5a5;border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;color:#b91c1c;margin-bottom:1.4rem;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
@@ -251,13 +241,12 @@ tr:hover td{background:var(--bg)}
 .upgrade-skip{width:100%;background:none;border:none;color:var(--text3);font-family:var(--font);font-size:13px;cursor:pointer;padding:6px}
 .upgrade-skip:hover{color:var(--text2)}
 
-/* ── Toast ────────────────────────────────────────────────────── */
+
 .toast{position:fixed;bottom:24px;right:24px;background:var(--text);border-radius:var(--radius-sm);padding:12px 18px;font-size:14px;font-weight:600;color:#fff;z-index:999;opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none;max-width:320px;font-family:var(--font);display:flex;align-items:center;gap:8px}
 .toast.show{opacity:1;transform:none}
 .toast.good{background:#16a34a}
 .toast.bad{background:#dc2626}
 
-/* ── Landing page ─────────────────────────────────────────────── */
 .land-hero{min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:3rem 2rem;background:linear-gradient(160deg,var(--blue-light) 0%,var(--white) 60%)}
 .land-pill{display:inline-block;background:var(--blue);color:#fff;font-family:var(--font);font-size:12px;font-weight:700;padding:5px 14px;border-radius:99px;margin-bottom:20px}
 .land-h1{font-family:var(--font);font-size:clamp(36px,5vw,56px);font-weight:800;color:var(--text);line-height:1.1;max-width:680px;margin-bottom:16px}
@@ -275,7 +264,7 @@ tr:hover td{background:var(--bg)}
 .step-title{font-family:var(--font);font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px}
 .step-desc{font-size:12px;color:var(--text2);line-height:1.5}
 
-/* empty state */
+
 .empty{text-align:center;padding:3rem 1rem}
 .empty-emoji{font-size:48px;display:block;margin-bottom:12px}
 .empty-title{font-family:var(--font);font-size:16px;font-weight:800;color:var(--text);margin-bottom:6px}
@@ -287,10 +276,9 @@ tr:hover td{background:var(--bg)}
 </head>
 <body>
 
-<!-- Toast -->
 <div class="toast" id="toast"></div>
 
-<!-- KEY Modal -->
+
 <div class="modal-bg" id="key-modal">
   <div class="modal-box">
     <span class="modal-emoji"></span>
@@ -305,7 +293,7 @@ tr:hover td{background:var(--bg)}
   </div>
 </div>
 
-<!-- UPGRADE Modal -->
+
 <div class="modal-bg" id="upgrade-modal">
   <div class="upgrade-box">
     <div class="upgrade-top">
@@ -346,7 +334,7 @@ tr:hover td{background:var(--bg)}
   </div>
 </div>
 
-<!-- ══ LANDING ══════════════════════════════════════════════════ -->
+
 <div class="page active" id="page-landing">
   <div class="land-hero">
     <div class="land-pill"></div>
@@ -376,7 +364,7 @@ tr:hover td{background:var(--bg)}
   </div>
 </div>
 
-<!-- ══ SIGN UP ═══════════════════════════════════════════════════ -->
+
 <div class="page" id="page-signup">
   <div class="auth-outer">
     <div class="auth-box">
@@ -422,8 +410,8 @@ tr:hover td{background:var(--bg)}
   </div>
 </div>
 
-<!-- ══ LOG IN ════════════════════════════════════════════════════ -->
-<div class="page" id="page-login">
+
+<div class="page" id="page-login>
   <div class="auth-outer">
     <div class="auth-box">
       <span class="auth-emoji"></span>
@@ -446,7 +434,6 @@ tr:hover td{background:var(--bg)}
   </div>
 </div>
 
-<!-- ══ USER DASHBOARD ════════════════════════════════════════════ -->
 <div class="page" id="page-dashboard">
   <div class="dash-wrap">
     <div class="sidebar">
@@ -465,7 +452,7 @@ tr:hover td{background:var(--bg)}
     </div>
     <div class="main">
 
-      <!-- HOME TAB -->
+  
       <div class="dash-section on" id="tab-overview">
         <div class="page-hdr">
           <div class="page-hdr-left">
@@ -474,7 +461,7 @@ tr:hover td{background:var(--bg)}
           </div>
         </div>
 
-        <!-- Usage bar -->
+    
         <div class="usage-wrap" id="usage-bar-wrap">
           <div class="usage-top">
             <div class="usage-title" id="ub-title"> Token usage this month</div>
@@ -532,7 +519,7 @@ tr:hover td{background:var(--bg)}
         </div>
       </div>
 
-      <!-- API KEYS TAB -->
+     
       <div class="dash-section" id="tab-keys">
         <div class="page-hdr">
           <div class="page-hdr-left">
@@ -549,7 +536,7 @@ tr:hover td{background:var(--bg)}
         </div>
       </div>
 
-      <!-- USAGE TAB -->
+      
       <div class="dash-section" id="tab-usage">
         <div class="page-hdr">
           <div class="page-hdr-left">
@@ -577,7 +564,7 @@ tr:hover td{background:var(--bg)}
         </div>
       </div>
 
-      <!-- BILLING TAB -->
+      
       <div class="dash-section" id="tab-billing">
         <div class="page-hdr">
           <div class="page-hdr-left">
@@ -603,7 +590,7 @@ tr:hover td{background:var(--bg)}
   </div>
 </div>
 
-<!-- ══ ADMIN DASHBOARD ═══════════════════════════════════════════ -->
+
 <div class="page" id="page-admin">
   <div class="dash-wrap">
     <div class="sidebar">
@@ -672,7 +659,7 @@ const API = 'http://localhost:3000'
 let S = { user:null, apiId:null, plan:'free', keys:[], rateLimit:1000, usedThisMonth:0, newKeyVal:null }
 let selectedUpgradePlan = 'pro'
 
-// ── Utils ──
+
 function toast(msg, type='') {
   const t = document.getElementById('toast')
   t.innerHTML = (type==='good'?' ':type==='bad'?' ':' ') + msg
@@ -696,7 +683,7 @@ async function call(path, opts={}) {
   return d
 }
 
-// ── Auth ──
+
 function pickSignupPlan(el, plan) {
   document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('picked'))
   el.classList.add('picked'); S.plan = plan
@@ -763,7 +750,7 @@ function logout() {
   showPage('landing')
 }
 
-// ── Dashboard ──
+
 function safeSet(id, val) {
   const el = document.getElementById(id)
   if (el) el.textContent = val
@@ -820,7 +807,7 @@ async function loadUsage() {
     const errRate   = total > 0 ? ((errors/total)*100).toFixed(1) : 0
     S.usedThisMonth = consumed; S.rateLimit = rateLimit
 
-    // Usage bar
+    
     const fill = document.getElementById('ub-fill')
     if (fill) { fill.style.width = pct + '%'; fill.className = 'usage-fill' + (pct>=90?' danger':pct>=70?' warn':'') }
     safeSet('ub-pct', pct + '%')
@@ -831,14 +818,14 @@ async function loadUsage() {
     const tip = document.getElementById('usage-tip')
     if (tip) tip.style.display = pct >= 70 ? 'flex' : 'none'
 
-    // Overview cards
+    
     const remEl = document.getElementById('ov-remaining')
     if (remEl) { remEl.textContent = remaining.toLocaleString(); remEl.className = 'scard-val ' + (pct>=90?'red':pct>=70?'amber':'green') }
     safeSet('ov-remaining-sub', 'of ' + rateLimit.toLocaleString() + ' total')
     safeSet('ov-reqs', consumed.toLocaleString())
     safeSet('ov-err', errors)
 
-    // Usage tab
+   
     const usRemEl = document.getElementById('us-remaining')
     if (usRemEl) { usRemEl.textContent = remaining.toLocaleString(); usRemEl.className = 'scard-val ' + (pct>=90?'red':pct>=70?'amber':'green') }
     safeSet('us-remaining-sub', consumed + ' deducted so far')
@@ -846,7 +833,7 @@ async function loadUsage() {
     safeSet('us-success', total>0?(100-parseFloat(errRate)).toFixed(1)+'%':'—')
     safeSet('us-errors', errors)
 
-    // Billing tab
+    
     const plan = S.plan || 'free'
     const planLabel = { free:' Free', pro:' Pro', enterprise:' Enterprise' }[plan] || plan
     const included = { free:rateLimit, pro:100000, enterprise:1000000 }[plan] || rateLimit
@@ -861,11 +848,11 @@ async function loadUsage() {
     const cta = document.getElementById('upgrade-cta')
     if (cta) cta.style.display = (plan==='free' && pct>=70) ? 'block' : 'none'
 
-    // Charts
+  
     renderChart('chart-bars','chart-labels', daily)
     renderChart('usage-bars','usage-labels', daily)
 
-    // Per-key table
+   
     const tbody = document.getElementById('usage-key-tbody')
     if (tbody) tbody.innerHTML = perKey.length===0
       ? `<tr><td colspan="5"><div class="empty"><span class="empty-emoji"></span><div class="empty-title">No usage data yet</div><div class="empty-sub">Hit your API with a key to see stats here</div></div></td></tr>`
@@ -1025,7 +1012,7 @@ async function payInvoice(id, btn) {
   } catch(e) { toast(e.message, 'bad'); btn.disabled=false; btn.innerHTML=' Try again' }
 }
 
-// Upgrade
+
 function showUpgradeModal(trigger, used, limit) {
   selectedUpgradePlan = 'pro'
   document.querySelectorAll('.uplan').forEach((c,i)=>c.classList.toggle('picked',i===0))
@@ -1145,7 +1132,7 @@ async function deleteUser(userId, name) {
   } catch(e) { toast(e.message, 'bad') }
 }
 
-// Navigation
+
 function showPage(p) {
   document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'))
   document.getElementById('page-'+p).classList.add('active')
@@ -1174,7 +1161,7 @@ function goAdmin(tab, btn) {
   if (tab==='users') loadAdmin()
 }
 
-// Auto-login
+
 window.addEventListener('load', async()=>{
   const token = localStorage.getItem('accessToken')
   if (!token) return
@@ -1188,7 +1175,7 @@ window.addEventListener('load', async()=>{
   } catch(e) { localStorage.removeItem('accessToken'); localStorage.removeItem('refreshToken') }
 })
 
-// Auto-show upgrade modal when API returns 429 + limitReached
+
 const _f = window.fetch
 window.fetch = async (...a) => {
   const r = await _f(...a)
