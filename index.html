@@ -1,0 +1,1202 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KeyForge — Your API Billing Dashboard</title>
+<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&family=Nunito+Sans:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+/* ── Reset & base ───────────────────────────────────────────── */
+*{box-sizing:border-box;margin:0;padding:0}
+:root{
+  --white:#FFFFFF;
+  --bg:#F7F8FC;
+  --bg2:#EEF0F8;
+  --card:#FFFFFF;
+  --border:#E2E6F0;
+  --text:#1E2235;
+  --text2:#5A607A;
+  --text3:#9BA3BC;
+  --blue:#4A6CF7;
+  --blue-light:#EEF1FF;
+  --blue-mid:#B8C4FD;
+  --green:#22C55E;
+  --green-light:#EDFBF3;
+  --red:#EF4444;
+  --red-light:#FEF2F2;
+  --amber:#F59E0B;
+  --amber-light:#FFFBEB;
+  --purple:#8B5CF6;
+  --purple-light:#F3EEFF;
+  --radius:14px;
+  --radius-sm:8px;
+  --shadow:0 2px 12px rgba(74,108,247,0.08);
+  --shadow-hover:0 6px 24px rgba(74,108,247,0.14);
+  --font:'Nunito',sans-serif;
+  --font-body:'Nunito Sans',sans-serif;
+}
+body{background:var(--bg);color:var(--text);font-family:var(--font-body);font-size:15px;line-height:1.6;min-height:100vh}
+
+/* ── Topbar ─────────────────────────────────────────────────── */
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:0 2rem;height:64px;background:var(--white);border-bottom:2px solid var(--border);position:sticky;top:0;z-index:100}
+.logo{font-family:var(--font);font-size:20px;font-weight:800;color:var(--blue);display:flex;align-items:center;gap:8px;cursor:pointer;text-decoration:none}
+.logo-icon{width:34px;height:34px;background:var(--blue);border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px}
+.topbar-right{display:flex;align-items:center;gap:10px}
+.topbar-user{font-size:13px;color:var(--text2);font-family:var(--font)}
+.avatar{width:36px;height:36px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700;color:#fff;cursor:pointer}
+.nav-link{color:var(--text2);font-family:var(--font);font-size:14px;font-weight:600;padding:6px 14px;border-radius:var(--radius-sm);border:none;background:none;cursor:pointer;transition:all .15s}
+.nav-link:hover{color:var(--blue);background:var(--blue-light)}
+.btn-nav{background:var(--blue);color:#fff;font-family:var(--font);font-size:14px;font-weight:700;padding:8px 20px;border-radius:var(--radius-sm);border:none;cursor:pointer;transition:all .15s}
+.btn-nav:hover{background:#3558e8;transform:translateY(-1px)}
+
+/* ── Pages ───────────────────────────────────────────────────── */
+.page{display:none;animation:fadeUp .25s ease}
+.page.active{display:block}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ── Auth pages ──────────────────────────────────────────────── */
+.auth-outer{min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;padding:2rem;background:linear-gradient(160deg,var(--blue-light) 0%,var(--bg) 60%)}
+.auth-box{width:100%;max-width:460px;background:var(--white);border-radius:20px;padding:2.5rem;box-shadow:0 8px 40px rgba(74,108,247,0.12)}
+.auth-emoji{font-size:42px;margin-bottom:12px;display:block;text-align:center}
+.auth-title{font-family:var(--font);font-size:26px;font-weight:800;color:var(--text);text-align:center;margin-bottom:6px}
+.auth-sub{font-size:14px;color:var(--text2);text-align:center;margin-bottom:1.8rem;line-height:1.6}
+.field{margin-bottom:16px}
+.field label{display:flex;align-items:center;gap:6px;font-size:13px;font-weight:700;color:var(--text);margin-bottom:6px;font-family:var(--font)}
+.field label .hint{font-size:11px;color:var(--text3);font-weight:500;margin-left:4px}
+.field input{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);padding:11px 14px;color:var(--text);font-family:var(--font-body);font-size:15px;outline:none;transition:border .15s}
+.field input:focus{border-color:var(--blue);background:var(--white)}
+.field input::placeholder{color:var(--text3)}
+.btn-main{width:100%;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);padding:13px;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer;transition:all .15s;margin-top:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+.btn-main:hover{background:#3558e8;transform:translateY(-1px);box-shadow:0 4px 16px rgba(74,108,247,0.3)}
+.btn-main:disabled{opacity:.55;cursor:not-allowed;transform:none}
+.auth-switch{text-align:center;margin-top:1.4rem;font-size:14px;color:var(--text2)}
+.auth-switch a{color:var(--blue);font-weight:700;cursor:pointer;text-decoration:none}
+.auth-switch a:hover{text-decoration:underline}
+.err-box{background:var(--red-light);border:1.5px solid #fca5a5;border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:#b91c1c;margin-bottom:14px;display:flex;align-items:center;gap:8px}
+.alt-btn{width:100%;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);padding:11px;font-family:var(--font);font-size:14px;font-weight:700;cursor:pointer;color:var(--text2);transition:all .15s;margin-top:8px}
+.alt-btn:hover{border-color:var(--blue-mid);color:var(--blue);background:var(--blue-light)}
+
+/* Plan picker */
+.plan-row{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:18px}
+.plan-card{border:2px solid var(--border);border-radius:var(--radius-sm);padding:14px 10px;text-align:center;cursor:pointer;transition:all .15s;background:var(--bg)}
+.plan-card:hover{border-color:var(--blue-mid);background:var(--blue-light)}
+.plan-card.picked{border-color:var(--blue);background:var(--blue-light)}
+.plan-card .plan-emoji{font-size:22px;display:block;margin-bottom:4px}
+.plan-card .plan-name{font-family:var(--font);font-size:13px;font-weight:800;color:var(--text);margin-bottom:2px}
+.plan-card .plan-price{font-size:11px;color:var(--text2)}
+
+/* ── Dashboard layout ────────────────────────────────────────── */
+.dash-wrap{display:grid;grid-template-columns:220px 1fr;min-height:calc(100vh - 64px)}
+
+/* Sidebar */
+.sidebar{background:var(--white);border-right:2px solid var(--border);padding:1.2rem;display:flex;flex-direction:column;gap:4px}
+.sidebar-section{font-size:11px;font-weight:700;color:var(--text3);letter-spacing:.08em;text-transform:uppercase;padding:8px 10px 4px;font-family:var(--font)}
+.slink{display:flex;align-items:center;gap:10px;padding:10px 12px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;font-weight:600;color:var(--text2);border:none;background:none;width:100%;font-family:var(--font);text-align:left;transition:all .15s}
+.slink:hover{color:var(--text);background:var(--bg)}
+.slink.on{color:var(--blue);background:var(--blue-light)}
+.slink .sicon{font-size:18px;width:24px;text-align:center}
+.slink .sbadge{margin-left:auto;background:var(--red);color:#fff;font-size:10px;font-weight:700;padding:2px 6px;border-radius:99px}
+.sidebar-bottom{margin-top:auto;padding-top:1rem;border-top:2px solid var(--border)}
+.sidebar-user-pill{display:flex;align-items:center;gap:8px;padding:10px 12px;border-radius:var(--radius-sm);background:var(--bg)}
+.sidebar-user-name{font-size:13px;font-weight:700;color:var(--text);font-family:var(--font)}
+.sidebar-user-email{font-size:11px;color:var(--text3)}
+
+/* Main content */
+.main{padding:2rem;overflow-y:auto;max-height:calc(100vh - 64px)}
+.dash-section{display:none}
+.dash-section.on{display:block}
+
+/* Page header */
+.page-hdr{display:flex;align-items:center;justify-content:space-between;margin-bottom:1.8rem}
+.page-hdr-left
+.page-hdr-title{font-family:var(--font);font-size:22px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px}
+.page-hdr-sub{font-size:13px;color:var(--text2);margin-top:3px}
+
+/* ── Stat cards ──────────────────────────────────────────────── */
+.stat-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin-bottom:1.6rem}
+.stat-grid-3{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-bottom:1.6rem}
+.scard{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:1.2rem 1.4rem;transition:box-shadow .15s}
+.scard:hover{box-shadow:var(--shadow)}
+.scard-icon{font-size:26px;margin-bottom:8px;display:block}
+.scard-label{font-size:12px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.05em;margin-bottom:6px;font-family:var(--font)}
+.scard-val{font-size:28px;font-weight:800;color:var(--text);font-family:var(--font);line-height:1}
+.scard-sub{font-size:12px;color:var(--text3);margin-top:5px}
+.scard-val.blue{color:var(--blue)}
+.scard-val.green{color:var(--green)}
+.scard-val.red{color:var(--red)}
+.scard-val.amber{color:var(--amber)}
+.scard-val.purple{color:var(--purple)}
+
+/* ── Usage bar ───────────────────────────────────────────────── */
+.usage-wrap{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:1.4rem;margin-bottom:1.6rem}
+.usage-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px}
+.usage-title{font-family:var(--font);font-size:14px;font-weight:700;color:var(--text);display:flex;align-items:center;gap:6px}
+.usage-pct{font-family:var(--font);font-size:13px;font-weight:700}
+.usage-track{height:12px;background:var(--bg2);border-radius:99px;overflow:hidden}
+.usage-fill{height:100%;border-radius:99px;background:var(--blue);transition:width .5s ease}
+.usage-fill.warn{background:var(--amber)}
+.usage-fill.danger{background:var(--red)}
+.usage-labels{display:flex;justify-content:space-between;margin-top:6px;font-size:12px;color:var(--text3)}
+.usage-tip{margin-top:10px;background:var(--amber-light);border:1.5px solid #fde68a;border-radius:var(--radius-sm);padding:8px 12px;font-size:12px;color:#92400e;display:none;align-items:center;gap:6px}
+
+/* ── Chart ───────────────────────────────────────────────────── */
+.chart-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:1.4rem;margin-bottom:1.6rem}
+.chart-title{font-family:var(--font);font-size:14px;font-weight:700;color:var(--text);margin-bottom:1rem}
+.bar-row{display:flex;align-items:flex-end;gap:8px;height:90px}
+.bar{flex:1;border-radius:6px 6px 0 0;background:var(--blue);opacity:.7;transition:opacity .15s;cursor:default;position:relative}
+.bar:hover{opacity:1}
+.bar-labels{display:flex;gap:8px;margin-top:8px}
+.bar-lbl{flex:1;text-align:center;font-size:11px;color:var(--text3);font-family:var(--font)}
+
+/* ── Tables ───────────────────────────────────────────────────── */
+.table-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);overflow:hidden;margin-bottom:1.6rem}
+.table-head-bar{display:flex;align-items:center;justify-content:space-between;padding:14px 18px 12px;border-bottom:2px solid var(--border)}
+.table-head-title{font-family:var(--font);font-size:15px;font-weight:800;color:var(--text)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;padding:10px 18px;font-size:11px;font-weight:700;color:var(--text3);text-transform:uppercase;letter-spacing:.06em;background:var(--bg);font-family:var(--font)}
+td{padding:13px 18px;font-size:14px;color:var(--text2);border-top:1px solid var(--border)}
+tr:hover td{background:var(--bg)}
+.mono{font-family:'Courier New',monospace;font-size:12px;color:var(--text)}
+
+/* Badges */
+.badge{display:inline-flex;align-items:center;gap:4px;padding:4px 10px;border-radius:99px;font-size:12px;font-weight:700;font-family:var(--font)}
+.badge-green{background:var(--green-light);color:#16a34a}
+.badge-red{background:var(--red-light);color:#dc2626}
+.badge-amber{background:var(--amber-light);color:#b45309}
+.badge-blue{background:var(--blue-light);color:var(--blue)}
+.badge-purple{background:var(--purple-light);color:var(--purple)}
+
+/* ── Buttons ──────────────────────────────────────────────────── */
+.btn{display:inline-flex;align-items:center;gap:6px;border:none;border-radius:var(--radius-sm);padding:9px 16px;font-family:var(--font);font-size:13px;font-weight:700;cursor:pointer;transition:all .15s}
+.btn-blue{background:var(--blue);color:#fff}
+.btn-blue:hover{background:#3558e8;transform:translateY(-1px)}
+.btn-ghost{background:var(--bg);border:2px solid var(--border);color:var(--text2)}
+.btn-ghost:hover{border-color:var(--blue-mid);color:var(--blue);background:var(--blue-light)}
+.btn-danger{background:var(--red-light);border:1.5px solid #fca5a5;color:#dc2626}
+.btn-danger:hover{background:#fee2e2}
+.btn-green{background:var(--green-light);border:1.5px solid #86efac;color:#16a34a}
+.btn-green:hover{background:#dcfce7}
+
+/* ── Key cards ────────────────────────────────────────────────── */
+.key-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:1.2rem 1.4rem;margin-bottom:12px;transition:box-shadow .15s}
+.key-card:hover{box-shadow:var(--shadow)}
+.key-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:10px}
+.key-card-name{font-family:var(--font);font-size:14px;font-weight:800;color:var(--text);display:flex;align-items:center;gap:8px}
+.key-display{display:flex;align-items:center;gap:8px;background:var(--bg);border:2px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;margin-bottom:10px}
+.key-display-text{font-family:'Courier New',monospace;font-size:13px;flex:1;color:var(--text2)}
+.key-copy-btn{background:var(--blue-light);border:none;color:var(--blue);font-family:var(--font);font-size:12px;font-weight:700;cursor:pointer;padding:4px 10px;border-radius:6px}
+.key-meta{display:flex;gap:16px;flex-wrap:wrap;margin-bottom:10px}
+.key-meta-item{font-size:12px;color:var(--text3);display:flex;align-items:center;gap:4px}
+.key-actions{display:flex;gap:8px}
+
+/* ── Invoice cards ────────────────────────────────────────────── */
+.inv-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:1.4rem;margin-bottom:12px}
+.inv-hdr{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:1rem;padding-bottom:1rem;border-bottom:2px solid var(--border)}
+.inv-id{font-family:var(--font);font-size:14px;font-weight:800;color:var(--text)}
+.inv-period{font-size:12px;color:var(--text3);margin-top:2px}
+.inv-table{width:100%;margin-bottom:1rem}
+.inv-table tr{border-bottom:1px solid var(--border)}
+.inv-table tr:last-child{border-bottom:none;font-weight:700}
+.inv-table td{padding:6px 0;font-size:13px;color:var(--text2)}
+.inv-table td:last-child{text-align:right;color:var(--text)}
+.pay-btn{width:100%;background:var(--green);color:#fff;border:none;border-radius:var(--radius-sm);padding:12px;font-family:var(--font);font-size:15px;font-weight:800;cursor:pointer;margin-top:10px;transition:all .15s;display:flex;align-items:center;justify-content:center;gap:8px}
+.pay-btn:hover{background:#16a34a;transform:translateY(-1px)}
+.pay-btn:disabled{opacity:.4;cursor:not-allowed;transform:none}
+
+/* ── Admin user rows ──────────────────────────────────────────── */
+.user-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:1.2rem 1.4rem;margin-bottom:12px;transition:box-shadow .15s}
+.user-card:hover{box-shadow:var(--shadow)}
+.user-card-top{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;flex-wrap:wrap;gap:10px}
+.user-info{display:flex;align-items:center;gap:12px}
+.user-av{width:42px;height:42px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--purple));display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:800;color:#fff;flex-shrink:0;font-family:var(--font)}
+.user-name{font-family:var(--font);font-size:14px;font-weight:800;color:var(--text)}
+.user-email{font-size:12px;color:var(--text3)}
+.user-stats{display:flex;gap:16px;align-items:center;flex-wrap:wrap}
+.ustat{text-align:center}
+.ustat-v{font-family:var(--font);font-size:16px;font-weight:800;color:var(--text)}
+.ustat-l{font-size:11px;color:var(--text3)}
+.user-limit-row{display:flex;align-items:center;gap:10px;padding:10px 14px;background:var(--bg);border-radius:var(--radius-sm);margin-bottom:10px}
+.user-limit-label{font-size:13px;font-weight:600;color:var(--text2);font-family:var(--font)}
+.limit-input{background:var(--white);border:2px solid var(--border);border-radius:6px;padding:6px 10px;color:var(--text);font-family:'Courier New',monospace;font-size:14px;width:110px;outline:none}
+.limit-input:focus{border-color:var(--blue)}
+.user-actions{display:flex;gap:8px}
+
+/* ── Modals ───────────────────────────────────────────────────── */
+.modal-bg{display:none;position:fixed;inset:0;background:rgba(30,34,53,0.5);z-index:300;align-items:center;justify-content:center;padding:1rem}
+.modal-bg.open{display:flex}
+.modal-box{background:var(--white);border-radius:20px;padding:2rem;width:100%;max-width:480px;box-shadow:0 20px 60px rgba(30,34,53,0.2);animation:popIn .2s ease}
+@keyframes popIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:none}}
+.modal-emoji{font-size:40px;text-align:center;display:block;margin-bottom:10px}
+.modal-title{font-family:var(--font);font-size:20px;font-weight:800;text-align:center;color:var(--text);margin-bottom:6px}
+.modal-sub{font-size:14px;color:var(--text2);text-align:center;margin-bottom:1.4rem;line-height:1.6}
+.key-reveal{background:var(--bg);border:2px dashed var(--blue-mid);border-radius:var(--radius-sm);padding:14px;font-family:'Courier New',monospace;font-size:13px;word-break:break-all;color:var(--blue);margin-bottom:1rem;line-height:1.7}
+.modal-warn{background:var(--amber-light);border:1.5px solid #fde68a;border-radius:var(--radius-sm);padding:10px 14px;font-size:13px;color:#92400e;margin-bottom:1.2rem;display:flex;align-items:flex-start;gap:8px}
+.modal-btns{display:flex;gap:10px;justify-content:flex-end}
+
+/* Upgrade modal */
+.upgrade-box{background:var(--white);border-radius:20px;padding:2rem;width:100%;max-width:520px;box-shadow:0 20px 60px rgba(30,34,53,0.2);animation:popIn .2s ease}
+.upgrade-top{text-align:center;margin-bottom:1.4rem}
+.upgrade-alert{background:var(--red-light);border:1.5px solid #fca5a5;border-radius:var(--radius-sm);padding:12px 14px;font-size:13px;color:#b91c1c;margin-bottom:1.4rem;display:flex;align-items:flex-start;gap:8px;line-height:1.5}
+.upgrade-plans{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:1.2rem}
+.uplan{border:2.5px solid var(--border);border-radius:var(--radius);padding:1.2rem;cursor:pointer;transition:all .15s;text-align:center;position:relative;background:var(--bg)}
+.uplan:hover{border-color:var(--blue-mid);background:var(--blue-light)}
+.uplan.picked{border-color:var(--blue);background:var(--blue-light)}
+.uplan-tag{position:absolute;top:-10px;left:50%;transform:translateX(-50%);background:var(--blue);color:#fff;font-size:10px;font-weight:800;padding:3px 10px;border-radius:99px;white-space:nowrap;font-family:var(--font)}
+.uplan-emoji{font-size:28px;margin-bottom:6px;display:block}
+.uplan-name{font-family:var(--font);font-size:15px;font-weight:800;color:var(--text);margin-bottom:4px}
+.uplan-price{font-family:var(--font);font-size:22px;font-weight:800;color:var(--blue);margin-bottom:4px}
+.uplan-desc{font-size:11px;color:var(--text2);line-height:1.5}
+.upgrade-confirm{width:100%;background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);padding:13px;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer;transition:all .15s;margin-bottom:8px;display:flex;align-items:center;justify-content:center;gap:8px}
+.upgrade-confirm:hover{background:#3558e8}
+.upgrade-skip{width:100%;background:none;border:none;color:var(--text3);font-family:var(--font);font-size:13px;cursor:pointer;padding:6px}
+.upgrade-skip:hover{color:var(--text2)}
+
+/* ── Toast ────────────────────────────────────────────────────── */
+.toast{position:fixed;bottom:24px;right:24px;background:var(--text);border-radius:var(--radius-sm);padding:12px 18px;font-size:14px;font-weight:600;color:#fff;z-index:999;opacity:0;transform:translateY(10px);transition:all .25s;pointer-events:none;max-width:320px;font-family:var(--font);display:flex;align-items:center;gap:8px}
+.toast.show{opacity:1;transform:none}
+.toast.good{background:#16a34a}
+.toast.bad{background:#dc2626}
+
+/* ── Landing page ─────────────────────────────────────────────── */
+.land-hero{min-height:calc(100vh - 64px);display:flex;align-items:center;justify-content:center;flex-direction:column;text-align:center;padding:3rem 2rem;background:linear-gradient(160deg,var(--blue-light) 0%,var(--white) 60%)}
+.land-pill{display:inline-block;background:var(--blue);color:#fff;font-family:var(--font);font-size:12px;font-weight:700;padding:5px 14px;border-radius:99px;margin-bottom:20px}
+.land-h1{font-family:var(--font);font-size:clamp(36px,5vw,56px);font-weight:800;color:var(--text);line-height:1.1;max-width:680px;margin-bottom:16px}
+.land-h1 span{color:var(--blue)}
+.land-sub{font-size:17px;color:var(--text2);max-width:480px;line-height:1.7;margin-bottom:2rem}
+.land-ctas{display:flex;gap:12px;flex-wrap:wrap;justify-content:center;margin-bottom:3rem}
+.land-btn-main{background:var(--blue);color:#fff;border:none;border-radius:var(--radius-sm);padding:14px 32px;font-family:var(--font);font-size:16px;font-weight:800;cursor:pointer;transition:all .15s}
+.land-btn-main:hover{background:#3558e8;transform:translateY(-2px);box-shadow:0 6px 20px rgba(74,108,247,0.3)}
+.land-btn-sec{background:var(--white);border:2.5px solid var(--border);border-radius:var(--radius-sm);padding:12px 28px;font-family:var(--font);font-size:16px;font-weight:700;cursor:pointer;color:var(--text);transition:all .15s}
+.land-btn-sec:hover{border-color:var(--blue-mid);color:var(--blue)}
+.land-steps{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;max-width:680px;width:100%}
+.step-card{background:var(--white);border:2px solid var(--border);border-radius:var(--radius);padding:1.4rem;text-align:left;transition:box-shadow .15s}
+.step-card:hover{box-shadow:var(--shadow-hover)}
+.step-num{display:inline-flex;align-items:center;justify-content:center;width:32px;height:32px;background:var(--blue);color:#fff;border-radius:50%;font-family:var(--font);font-size:14px;font-weight:800;margin-bottom:10px}
+.step-title{font-family:var(--font);font-size:14px;font-weight:800;color:var(--text);margin-bottom:4px}
+.step-desc{font-size:12px;color:var(--text2);line-height:1.5}
+
+/* empty state */
+.empty{text-align:center;padding:3rem 1rem}
+.empty-emoji{font-size:48px;display:block;margin-bottom:12px}
+.empty-title{font-family:var(--font);font-size:16px;font-weight:800;color:var(--text);margin-bottom:6px}
+.empty-sub{font-size:13px;color:var(--text2)}
+
+.spinner{display:inline-block;width:14px;height:14px;border:2.5px solid rgba(255,255,255,.4);border-top-color:#fff;border-radius:50%;animation:spin .6s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+</style>
+</head>
+<body>
+
+<!-- Toast -->
+<div class="toast" id="toast"></div>
+
+<!-- KEY Modal -->
+<div class="modal-bg" id="key-modal">
+  <div class="modal-box">
+    <span class="modal-emoji"></span>
+    <div class="modal-title" id="key-modal-title">Your new API key</div>
+    <div class="modal-sub" id="key-modal-sub">Save this key somewhere safe — you'll only see it once!</div>
+    <div class="modal-warn"> <span>This is the <strong>only time</strong> this key will be shown. Copy it now before closing.</span></div>
+    <div class="key-reveal" id="key-reveal-text"></div>
+    <div class="modal-btns">
+      <button class="btn btn-ghost" onclick="copyKey()"> Copy key</button>
+      <button class="btn btn-blue" onclick="closeKeyModal()">I saved it ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- UPGRADE Modal -->
+<div class="modal-bg" id="upgrade-modal">
+  <div class="upgrade-box">
+    <div class="upgrade-top">
+      <span style="font-size:48px;display:block;margin-bottom:10px"></span>
+      <div style="font-family:var(--font);font-size:22px;font-weight:800;color:var(--text);margin-bottom:6px">You've used all your free requests!</div>
+      <div style="font-size:14px;color:var(--text2);line-height:1.6" id="upgrade-msg">Upgrade your plan to keep your API running.</div>
+    </div>
+    <div class="upgrade-alert"> <span id="upgrade-alert-text">Your API is currently returning errors. Upgrade now to unblock it instantly.</span></div>
+    <div class="upgrade-plans">
+      <div class="uplan picked" onclick="pickPlan('pro',this)">
+        <div class="uplan-tag"> Recommended</div>
+        <span class="uplan-emoji"></span>
+        <div class="uplan-name">Pro</div>
+        <div class="uplan-price">$0.0001<span style="font-size:12px;color:var(--text2)">/req</span></div>
+        <div class="uplan-desc">100,000 requests included<br>then $0.0001 each<br>Great for growing projects</div>
+      </div>
+      <div class="uplan" onclick="pickPlan('enterprise',this)">
+        <span class="uplan-emoji"></span>
+        <div class="uplan-name">Enterprise</div>
+        <div class="uplan-price">$0.00005<span style="font-size:12px;color:var(--text2)">/req</span></div>
+        <div class="uplan-desc">1,000,000 requests included<br>then $0.00005 each<br>Best for high volume</div>
+      </div>
+    </div>
+    <button class="upgrade-confirm" id="upgrade-btn" onclick="doUpgrade()">⚡ Upgrade to Pro now</button>
+    <button class="upgrade-skip" onclick="closeUpgradeModal()">Maybe later — I'll wait until next month</button>
+  </div>
+</div>
+
+<!-- TOP NAV -->
+<div class="topbar">
+  <a class="logo" onclick="showPage('landing')">
+    <div class="logo-icon"></div>
+    KeyForge
+  </a>
+  <div class="topbar-right" id="topbar-right">
+    <button class="nav-link" onclick="showPage('login')">Log in</button>
+    <button class="btn-nav" onclick="showPage('signup')">Get started free →</button>
+  </div>
+</div>
+
+<!-- ══ LANDING ══════════════════════════════════════════════════ -->
+<div class="page active" id="page-landing">
+  <div class="land-hero">
+    <div class="land-pill"></div>
+    <h1 class="land-h1">Charge for your API.<br><span>Simple, fair billing.</span></h1>
+    <p class="land-sub">Create an API key, share it with your users, and watch your usage tracked automatically. Bills are created for you every month.</p>
+    <div class="land-ctas">
+      <button class="land-btn-main" onclick="showPage('signup')">Create free account →</button>
+      <button class="land-btn-sec" onclick="showPage('login')">I already have an account</button>
+    </div>
+    <div class="land-steps">
+      <div class="step-card">
+        <div class="step-num">1</div>
+        <div class="step-title">Sign up & pick a plan</div>
+        <div class="step-desc">Start free with 1,000 requests per month. Upgrade whenever you need more.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">2</div>
+        <div class="step-title">Get your API key</div>
+        <div class="step-desc">Generate a secure key in one click. Share it with anyone who needs to use your API.</div>
+      </div>
+      <div class="step-card">
+        <div class="step-num">3</div>
+        <div class="step-title">Track usage & get paid</div>
+        <div class="step-desc">Every request is logged. Invoices are created automatically at month end.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ SIGN UP ═══════════════════════════════════════════════════ -->
+<div class="page" id="page-signup">
+  <div class="auth-outer">
+    <div class="auth-box">
+      <span class="auth-emoji"></span>
+      <div class="auth-title">Create your free account</div>
+      <div class="auth-sub">Takes less than a minute. No credit card needed to start.</div>
+      <div class="field">
+        <label>Choose your plan</label>
+      </div>
+      <div class="plan-row">
+        <div class="plan-card picked" onclick="pickSignupPlan(this,'free')">
+          <span class="plan-emoji"></span>
+          <div class="plan-name">Free</div>
+          <div class="plan-price">1,000 req/mo</div>
+        </div>
+        <div class="plan-card" onclick="pickSignupPlan(this,'pro')">
+          <span class="plan-emoji"></span>
+          <div class="plan-name">Pro</div>
+          <div class="plan-price">$0.0001/req</div>
+        </div>
+        <div class="plan-card" onclick="pickSignupPlan(this,'enterprise')">
+          <span class="plan-emoji"></span>
+          <div class="plan-name">Enterprise</div>
+          <div class="plan-price">Custom</div>
+        </div>
+      </div>
+      <div id="su-err"></div>
+      <div class="field">
+        <label>Your name </label>
+        <input id="su-name" placeholder="e.g. Arjun Sharma">
+      </div>
+      <div class="field">
+        <label>Email address </label>
+        <input id="su-email" type="email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label>Password  <span class="hint">at least 8 characters</span></label>
+        <input id="su-pass" type="password" placeholder="Choose a strong password">
+      </div>
+      <button class="btn-main" id="su-btn" onclick="doSignup()">Create my account →</button>
+      <div class="auth-switch">Already have an account? <a onclick="showPage('login')">Log in here</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ LOG IN ════════════════════════════════════════════════════ -->
+<div class="page" id="page-login">
+  <div class="auth-outer">
+    <div class="auth-box">
+      <span class="auth-emoji"></span>
+      <div class="auth-title">Welcome back!</div>
+      <div class="auth-sub">Log in to see your API keys, usage, and invoices.</div>
+      <div id="li-err"></div>
+      <div class="field">
+        <label>Email address </label>
+        <input id="li-email" type="email" placeholder="you@example.com">
+      </div>
+      <div class="field">
+        <label>Password </label>
+        <input id="li-pass" type="password" placeholder="Your password">
+      </div>
+      <button class="btn-main" id="li-btn" onclick="doLogin()">Log in →</button>
+      <div style="text-align:center;margin:14px 0;color:var(--text3);font-size:13px">— or —</div>
+      <button class="alt-btn" onclick="doAdminLogin()"> Sign in as Admin </button>
+      <div class="auth-switch">Don't have an account? <a onclick="showPage('signup')">Sign up free</a></div>
+    </div>
+  </div>
+</div>
+
+<!-- ══ USER DASHBOARD ════════════════════════════════════════════ -->
+<div class="page" id="page-dashboard">
+  <div class="dash-wrap">
+    <div class="sidebar">
+      <div class="sidebar-section">Menu</div>
+      <button class="slink on" onclick="goTab('overview',this)"><span class="sicon"></span> Home</button>
+      <button class="slink" onclick="goTab('keys',this)"><span class="sicon"></span> My API Keys</button>
+      <button class="slink" onclick="goTab('usage',this)"><span class="sicon"></span> Usage Stats</button>
+      <button class="slink" onclick="goTab('billing',this)"><span class="sicon"></span> Billing</button>
+      <div class="sidebar-bottom">
+        <div class="sidebar-user-pill">
+          <div class="avatar" id="sb-av">U</div>
+          <div><div class="sidebar-user-name" id="sb-name">User</div><div class="sidebar-user-email" id="sb-email"></div></div>
+        </div>
+        <button class="slink" style="margin-top:6px" onclick="logout()"><span class="sicon"></span> Log out</button>
+      </div>
+    </div>
+    <div class="main">
+
+      <!-- HOME TAB -->
+      <div class="dash-section on" id="tab-overview">
+        <div class="page-hdr">
+          <div class="page-hdr-left">
+            <div class="page-hdr-title"> Home</div>
+            <div class="page-hdr-sub">Here's a summary of your API activity</div>
+          </div>
+        </div>
+
+        <!-- Usage bar -->
+        <div class="usage-wrap" id="usage-bar-wrap">
+          <div class="usage-top">
+            <div class="usage-title" id="ub-title"> Token usage this month</div>
+            <div class="usage-pct" id="ub-pct" style="color:var(--blue)">0%</div>
+          </div>
+          <div class="usage-track"><div class="usage-fill" id="ub-fill" style="width:0%"></div></div>
+          <div class="usage-labels"><span id="ub-used">0 used</span><span id="ub-limit">1,000 limit</span></div>
+          <div class="usage-tip" id="usage-tip"> You're running low on tokens! Consider upgrading your plan so your API doesn't stop working.</div>
+        </div>
+
+        <div class="stat-grid">
+          <div class="scard">
+            <span class="scard-icon"></span>
+            <div class="scard-label">Requests used</div>
+            <div class="scard-val blue" id="ov-reqs">—</div>
+            <div class="scard-sub">this month</div>
+          </div>
+          <div class="scard">
+            <span class="scard-icon"></span>
+            <div class="scard-label">Tokens left</div>
+            <div class="scard-val green" id="ov-remaining">—</div>
+            <div class="scard-sub" id="ov-remaining-sub">of — total</div>
+          </div>
+          <div class="scard">
+            <span class="scard-icon"></span>
+            <div class="scard-label">Errors</div>
+            <div class="scard-val red" id="ov-err">—</div>
+            <div class="scard-sub">errors don't cost tokens</div>
+          </div>
+          <div class="scard">
+            <span class="scard-icon"></span>
+            <div class="scard-label">Amount due</div>
+            <div class="scard-val amber" id="ov-bill">—</div>
+            <div class="scard-sub">this month</div>
+          </div>
+        </div>
+
+        <div class="chart-card">
+          <div class="chart-title"> Requests per day — last 7 days</div>
+          <div class="bar-row" id="chart-bars"></div>
+          <div class="bar-labels" id="chart-labels"></div>
+        </div>
+
+        <div class="table-card">
+          <div class="table-head-bar">
+            <div class="table-head-title"> Recent requests</div>
+          </div>
+          <table>
+            <thead><tr><th>Endpoint</th><th>Key used</th><th>Result</th><th>Speed</th><th>When</th></tr></thead>
+            <tbody id="activity-tbody">
+              <tr><td colspan="5"><div class="empty"><span class="empty-emoji"></span><div class="empty-title">No requests yet</div>
+                <div class="empty-sub">Make an API call with your key to see it here</div></div></td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- API KEYS TAB -->
+      <div class="dash-section" id="tab-keys">
+        <div class="page-hdr">
+          <div class="page-hdr-left">
+            <div class="page-hdr-title"> My API Keys</div>
+            <div class="page-hdr-sub">Keys let you and your users call your API</div>
+          </div>
+          <button class="btn btn-blue" onclick="generateKey()"> Create new key</button>
+        </div>
+        <div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:var(--blue);margin-bottom:1.4rem;display:flex;align-items:flex-start;gap:8px;line-height:1.5">
+          <span>API keys are like passwords for your API. Keep them secret! Each key is only shown <strong>once</strong> when created — save it somewhere safe.</span>
+        </div>
+        <div id="keys-list">
+          <div class="empty"><span class="empty-emoji"></span><div class="empty-title">No keys yet</div><div class="empty-sub">Click "Create new key" above to generate your first API key</div></div>
+        </div>
+      </div>
+
+      <!-- USAGE TAB -->
+      <div class="dash-section" id="tab-usage">
+        <div class="page-hdr">
+          <div class="page-hdr-left">
+            <div class="page-hdr-title">📊 Usage Stats</div>
+            <div class="page-hdr-sub">See how your API is being used</div>
+          </div>
+        </div>
+        <div class="stat-grid">
+          <div class="scard"><span class="scard-icon"></span><div class="scard-label">Tokens consumed</div><div class="scard-val blue" id="us-consumed">—</div><div class="scard-sub">successful requests only</div></div>
+          <div class="scard"><span class="scard-icon"></span><div class="scard-label">Tokens remaining</div><div class="scard-val green" id="us-remaining">—</div><div class="scard-sub" id="us-remaining-sub"></div></div>
+          <div class="scard"><span class="scard-icon"></span><div class="scard-label">Success rate</div><div class="scard-val green" id="us-success">—</div></div>
+          <div class="scard"><span class="scard-icon"></span><div class="scard-label">Errors (free)</div><div class="scard-val red" id="us-errors">—</div><div class="scard-sub">errors don't cost you</div></div>
+        </div>
+        <div class="chart-card">
+          <div class="chart-title"> Daily requests — last 7 days</div>
+          <div class="bar-row" id="usage-bars"></div>
+          <div class="bar-labels" id="usage-labels"></div>
+        </div>
+        <div class="table-card">
+          <div class="table-head-bar"><div class="table-head-title"> Breakdown by key</div></div>
+          <table>
+            <thead><tr><th>Key</th><th>Requests (counted)</th><th>Errors (free)</th><th>Avg speed</th><th>Last used</th></tr></thead>
+            <tbody id="usage-key-tbody"><tr><td colspan="5"><div class="empty"><span class="empty-emoji"></span><div class="empty-title">No data yet</div></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- BILLING TAB -->
+      <div class="dash-section" id="tab-billing">
+        <div class="page-hdr">
+          <div class="page-hdr-left">
+            <div class="page-hdr-title">💳 Billing</div>
+            <div class="page-hdr-sub">Your plan, usage, and invoices</div>
+          </div>
+          <button class="btn btn-ghost" onclick="generateInvoice()"> Generate invoice</button>
+        </div>
+        <div class="stat-grid-3">
+          <div class="scard"><span class="scard-icon"></span><div class="scard-label">Your plan</div><div class="scard-val blue" id="bill-plan">—</div><div class="scard-sub" id="bill-plan-sub"></div></div>
+          <div class="scard"><span class="scard-icon"></span><div class="scard-label">Used this month</div><div class="scard-val" id="bill-used">—</div><div class="scard-sub">requests made</div></div>
+          <div class="scard"><span class="scard-icon"></span><div class="scard-label">Amount due</div><div class="scard-val amber" id="bill-due">—</div><div class="scard-sub">this month</div></div>
+        </div>
+        <div id="upgrade-cta" style="display:none;margin-bottom:1.2rem">
+          <button class="btn-main" style="max-width:400px" onclick="showUpgradeModal('manual')"> Upgrade my plan for more requests</button>
+        </div>
+        <div id="invoices-list">
+          <div class="empty"><span class="empty-emoji">📄</span><div class="empty-title">No invoices yet</div><div class="empty-sub">Click "Generate invoice" above to create your first one</div></div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<!-- ══ ADMIN DASHBOARD ═══════════════════════════════════════════ -->
+<div class="page" id="page-admin">
+  <div class="dash-wrap">
+    <div class="sidebar">
+      <div class="sidebar-section">Admin Menu</div>
+      <button class="slink on" onclick="goAdmin('overview',this)"><span class="sicon"></span> Overview</button>
+      <button class="slink" onclick="goAdmin('users',this)"><span class="sicon"></span> All Users</button>
+      <button class="slink" onclick="goAdmin('keys',this)"><span class="sicon"></span> All Keys</button>
+      <button class="slink" onclick="goAdmin('invoices',this)"><span class="sicon"></span> All Invoices</button>
+      <div class="sidebar-bottom">
+        <div class="sidebar-user-pill">
+          <div class="avatar"></div>
+          <div><div class="sidebar-user-name">Admin</div><div class="sidebar-user-email">admin@keyforge.io</div></div>
+        </div>
+        <button class="slink" style="margin-top:6px" onclick="logout()"><span class="sicon"></span> Log out</button>
+      </div>
+    </div>
+    <div class="main">
+
+      <div class="dash-section on" id="atab-overview">
+        <div class="page-hdr"><div class="page-hdr-left"><div class="page-hdr-title"> Admin Overview</div><div class="page-hdr-sub">Platform-wide stats at a glance</div></div></div>
+        <div style="background:var(--blue-light);border:1.5px solid var(--blue-mid);border-radius:var(--radius-sm);padding:12px 16px;font-size:13px;color:var(--blue);margin-bottom:1.4rem;display:flex;align-items:center;gap:8px">
+           You are logged in as <strong>Admin</strong> — you can see and manage all users, keys, and invoices.
+        </div>
+        <div class="stat-grid">
+          <div class="scard"><span class="scard-icon"></span><div class="scard-label">Total users</div><div class="scard-val blue" id="ad-users">—</div></div>
+          <div class="scard"><span class="scard-icon"></span><div class="scard-label">Active keys</div><div class="scard-val green" id="ad-keys">—</div></div>
+          <div class="scard"><span class="scard-icon"></span><div class="scard-label">Requests today</div><div class="scard-val purple" id="ad-reqs">—</div></div>
+          <div class="scard"><span class="scard-icon"></span><div class="scard-label">Pending revenue</div><div class="scard-val amber" id="ad-rev">—</div></div>
+        </div>
+      </div>
+
+      <div class="dash-section" id="atab-users">
+        <div class="page-hdr">
+          <div class="page-hdr-left"><div class="page-hdr-title">👥 All Users</div><div class="page-hdr-sub">Manage users, set their limits, or remove accounts</div></div>
+          <button class="btn btn-ghost" onclick="loadAdmin()">🔄 Refresh</button>
+        </div>
+        <div id="admin-users-list"><div class="empty"><span class="empty-emoji">👥</span><div class="empty-title">Loading users...</div></div></div>
+      </div>
+
+      <div class="dash-section" id="atab-keys">
+        <div class="page-hdr"><div class="page-hdr-left"><div class="page-hdr-title"> All API Keys</div><div class="page-hdr-sub">Every key across all users</div></div></div>
+        <div class="table-card">
+          <table>
+            <thead><tr><th>Key (masked)</th><th>Owner</th><th>Plan</th><th>Status</th><th>Created</th></tr></thead>
+            <tbody id="admin-keys-tbody"><tr><td colspan="5"><div class="empty"><span class="empty-emoji"></span><div class="empty-title">Loading...</div></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="dash-section" id="atab-invoices">
+        <div class="page-hdr"><div class="page-hdr-left"><div class="page-hdr-title"> All Invoices</div><div class="page-hdr-sub">Payment history across all users</div></div></div>
+        <div class="table-card">
+          <table>
+            <thead><tr><th>Invoice ID</th><th>User</th><th>Plan</th><th>Amount</th><th>Status</th><th>Period</th></tr></thead>
+            <tbody id="admin-inv-tbody"><tr><td colspan="6"><div class="empty"><span class="empty-emoji"></span><div class="empty-title">Loading...</div></div></td></tr></tbody>
+          </table>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</div>
+
+<script>
+const API = 'http://localhost:3000'
+let S = { user:null, apiId:null, plan:'free', keys:[], rateLimit:1000, usedThisMonth:0, newKeyVal:null }
+let selectedUpgradePlan = 'pro'
+
+// ── Utils ──
+function toast(msg, type='') {
+  const t = document.getElementById('toast')
+  t.innerHTML = (type==='good'?' ':type==='bad'?' ':' ') + msg
+  t.className = 'toast show' + (type?' '+type:'')
+  clearTimeout(t._t); t._t = setTimeout(()=>t.classList.remove('show'), 3000)
+}
+function setErr(id, msg) {
+  document.getElementById(id).innerHTML = msg ? `<div class="err-box"> ${msg}</div>` : ''
+}
+function setBtn(id, loading, txt) {
+  const b = document.getElementById(id)
+  b.disabled = loading
+  b.innerHTML = loading ? `<span class="spinner"></span> Please wait...` : txt
+}
+async function call(path, opts={}) {
+  const token = localStorage.getItem('accessToken')
+  const h = { 'Content-Type':'application/json', ...(token?{Authorization:'Bearer '+token}:{}) }
+  const r = await fetch(API+path, { headers:h, ...opts })
+  const d = await r.json()
+  if (!r.ok) throw new Error(d.error || 'Something went wrong')
+  return d
+}
+
+// ── Auth ──
+function pickSignupPlan(el, plan) {
+  document.querySelectorAll('.plan-card').forEach(c=>c.classList.remove('picked'))
+  el.classList.add('picked'); S.plan = plan
+}
+function pickPlan(plan, el) {
+  selectedUpgradePlan = plan
+  document.querySelectorAll('.uplan').forEach(c=>c.classList.remove('picked'))
+  el.classList.add('picked')
+  document.getElementById('upgrade-btn').textContent = `⚡ Upgrade to ${plan.charAt(0).toUpperCase()+plan.slice(1)} now`
+}
+
+async function doSignup() {
+  setErr('su-err','')
+  const name  = document.getElementById('su-name').value.trim()
+  const email = document.getElementById('su-email').value.trim()
+  const pass  = document.getElementById('su-pass').value
+  if (!name)  return setErr('su-err', 'Please enter your name')
+  if (!email) return setErr('su-err', 'Please enter your email')
+  if (pass.length < 8) return setErr('su-err', 'Password must be at least 8 characters long')
+  setBtn('su-btn', true, '')
+  try {
+    const d = await call('/auth/signup', { method:'POST', body:JSON.stringify({ name, email, password:pass, plan:S.plan }) })
+    localStorage.setItem('accessToken', d.accessToken)
+    localStorage.setItem('refreshToken', d.refreshToken)
+    S.user=d.user; S.apiId=d.apiId; S.plan=d.user.plan
+    toast('Account created! Welcome, '+d.user.name+' 🎉', 'good')
+    await loadDash(); showPage('dashboard')
+  } catch(e) { setErr('su-err', e.message) }
+  finally { setBtn('su-btn', false, 'Create my account →') }
+}
+
+async function doLogin() {
+  setErr('li-err','')
+  const email = document.getElementById('li-email').value.trim()
+  const pass  = document.getElementById('li-pass').value
+  if (!email || !pass) return setErr('li-err', 'Please fill in both fields')
+  setBtn('li-btn', true, '')
+  try {
+    const d = await call('/auth/login', { method:'POST', body:JSON.stringify({ email, password:pass }) })
+    localStorage.setItem('accessToken', d.accessToken)
+    localStorage.setItem('refreshToken', d.refreshToken)
+    S.user=d.user; S.apiId=d.apiId; S.plan=d.user.plan
+    toast('Welcome back, '+d.user.name+'! ', 'good')
+    if (d.user.role==='ADMIN') { await loadAdmin(); showPage('admin') }
+    else { await loadDash(); showPage('dashboard') }
+  } catch(e) { setErr('li-err', e.message) }
+  finally { setBtn('li-btn', false, 'Log in →') }
+}
+
+async function doAdminLogin() {
+  setErr('li-err','')
+  try {
+    const d = await call('/auth/login', { method:'POST', body:JSON.stringify({ email:'admin@keyforge.io', password:'Admin1234!' }) })
+    localStorage.setItem('accessToken', d.accessToken)
+    S.user = d.user
+    toast('Signed in as Admin ', 'good')
+    await loadAdmin(); showPage('admin')
+  } catch(e) { setErr('li-err', 'Admin account not set up yet. Run: node src/scripts/createAdmin.js') }
+}
+
+function logout() {
+  localStorage.removeItem('accessToken'); localStorage.removeItem('refreshToken')
+  S = { user:null, apiId:null, plan:'free', keys:[], rateLimit:1000, usedThisMonth:0, newKeyVal:null }
+  showPage('landing')
+}
+
+// ── Dashboard ──
+function safeSet(id, val) {
+  const el = document.getElementById(id)
+  if (el) el.textContent = val
+}
+function safeSetClass(id, cls) {
+  const el = document.getElementById(id)
+  if (el) el.className = cls
+}
+function safeSetStyle(id, prop, val) {
+  const el = document.getElementById(id)
+  if (el) el.style[prop] = val
+}
+
+function safeSet(id, val) {
+  const el = document.getElementById(id)
+  if (el) el.textContent = val
+}
+function safeSetStyle(id, prop, val) {
+  const el = document.getElementById(id)
+  if (el) el.style[prop] = val
+}
+
+async function loadDash() {
+  // Always fetch apiId fresh — never assume it's set
+  try {
+    const apis = await call('/apis')
+    if (apis.length) {
+      S.apiId    = apis[0]._id
+      S.plan     = apis[0].plan
+      S.rateLimit= apis[0].rateLimit || 1000
+    }
+  } catch(e) { console.error('Could not load APIs:', e) }
+
+  if (S.user) {
+    const n = S.user.name || 'User'
+    safeSet('sb-name', n)
+    safeSet('sb-email', S.user.email || '')
+    const av = document.getElementById('sb-av')
+    if (av) av.textContent = n[0].toUpperCase()
+  }
+  await Promise.all([loadKeys(), loadUsage(), loadInvoices()])
+}
+
+async function loadUsage() {
+  if (!S.apiId) return
+  try {
+    const { summary, perKey, daily } = await call(`/usage/${S.apiId}`)
+    const consumed  = summary.consumed  || 0
+    const errors    = summary.errors    || 0
+    const total     = summary.total     || 0
+    const rateLimit = summary.rateLimit || S.rateLimit || 1000
+    const remaining = summary.remaining ?? Math.max(0, rateLimit - consumed)
+    const pct       = summary.usedPct   ?? Math.min(100, Math.round(consumed/rateLimit*100))
+    const errRate   = total > 0 ? ((errors/total)*100).toFixed(1) : 0
+    S.usedThisMonth = consumed; S.rateLimit = rateLimit
+
+    // Usage bar
+    const fill = document.getElementById('ub-fill')
+    if (fill) { fill.style.width = pct + '%'; fill.className = 'usage-fill' + (pct>=90?' danger':pct>=70?' warn':'') }
+    safeSet('ub-pct', pct + '%')
+    safeSetStyle('ub-pct', 'color', pct>=90?'var(--red)':pct>=70?'var(--amber)':'var(--blue)')
+    safeSet('ub-used', consumed.toLocaleString() + ' used')
+    safeSet('ub-limit', rateLimit.toLocaleString() + ' limit')
+    safeSet('ub-title', pct>=100 ? ' Limit reached — your API is blocked' : pct>=90 ? ' Almost out of tokens!' : 'Token usage this month')
+    const tip = document.getElementById('usage-tip')
+    if (tip) tip.style.display = pct >= 70 ? 'flex' : 'none'
+
+    // Overview cards
+    const remEl = document.getElementById('ov-remaining')
+    if (remEl) { remEl.textContent = remaining.toLocaleString(); remEl.className = 'scard-val ' + (pct>=90?'red':pct>=70?'amber':'green') }
+    safeSet('ov-remaining-sub', 'of ' + rateLimit.toLocaleString() + ' total')
+    safeSet('ov-reqs', consumed.toLocaleString())
+    safeSet('ov-err', errors)
+
+    // Usage tab
+    const usRemEl = document.getElementById('us-remaining')
+    if (usRemEl) { usRemEl.textContent = remaining.toLocaleString(); usRemEl.className = 'scard-val ' + (pct>=90?'red':pct>=70?'amber':'green') }
+    safeSet('us-remaining-sub', consumed + ' deducted so far')
+    safeSet('us-consumed', consumed.toLocaleString())
+    safeSet('us-success', total>0?(100-parseFloat(errRate)).toFixed(1)+'%':'—')
+    safeSet('us-errors', errors)
+
+    // Billing tab
+    const plan = S.plan || 'free'
+    const planLabel = { free:' Free', pro:' Pro', enterprise:' Enterprise' }[plan] || plan
+    const included = { free:rateLimit, pro:100000, enterprise:1000000 }[plan] || rateLimit
+    safeSet('bill-plan', planLabel)
+    safeSet('bill-plan-sub', included.toLocaleString() + ' requests included')
+    safeSet('bill-used', consumed.toLocaleString())
+    const rate = { free:0, pro:0.0001, enterprise:0.00005 }[plan] || 0
+    const billable = Math.max(0, consumed - included)
+    const amount = (billable * rate).toFixed(4)
+    safeSet('ov-bill', '$' + amount)
+    safeSet('bill-due', '$' + amount)
+    const cta = document.getElementById('upgrade-cta')
+    if (cta) cta.style.display = (plan==='free' && pct>=70) ? 'block' : 'none'
+
+    // Charts
+    renderChart('chart-bars','chart-labels', daily)
+    renderChart('usage-bars','usage-labels', daily)
+
+    // Per-key table
+    const tbody = document.getElementById('usage-key-tbody')
+    if (tbody) tbody.innerHTML = perKey.length===0
+      ? `<tr><td colspan="5"><div class="empty"><span class="empty-emoji"></span><div class="empty-title">No usage data yet</div><div class="empty-sub">Hit your API with a key to see stats here</div></div></td></tr>`
+      : perKey.map(k=>`<tr>
+          <td class="mono">${k.keyPrefix||'—'}</td>
+          <td><strong>${(k.successful||k.requests||0).toLocaleString()}</strong> <span style="color:var(--text3);font-size:11px">tokens used</span></td>
+          <td>${k.errors} <span style="color:var(--text3);font-size:11px">free</span></td>
+          <td>${k.avgLatency?Math.round(k.avgLatency)+'ms':'—'}</td>
+          <td style="color:var(--text3)">${k.lastUsed?new Date(k.lastUsed).toLocaleDateString():'—'}</td>
+        </tr>`).join('')
+  } catch(e) { console.error('loadUsage error:', e) }
+}
+
+function renderChart(barsId, labelsId, daily) {
+  const days = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun']
+  const today = new Date()
+  const vals=[], lbls=[]
+  for (let i=6;i>=0;i--) {
+    const d=new Date(today); d.setDate(d.getDate()-i)
+    const key=d.toISOString().slice(0,10)
+    const entry=(daily||[]).find(x=>x._id===key)
+    lbls.push(days[d.getDay()===0?6:d.getDay()-1])
+    vals.push(entry?entry.count:0)
+  }
+  const max = Math.max(...vals,1)
+  const bc = document.getElementById(barsId)
+  const bl = document.getElementById(labelsId)
+  if (bc) bc.innerHTML = vals.map(v=>`<div class="bar" style="height:${Math.round(v/max*100)}%" title="${v} requests"></div>`).join('')
+  if (bl) bl.innerHTML = lbls.map(l=>`<div class="bar-lbl">${l}</div>`).join('')
+}
+
+async function loadKeys() {
+  if (!S.apiId) return
+  try {
+    S.keys = await call(`/apis/${S.apiId}/keys`)
+    renderKeys()
+  } catch(e) {
+    const el = document.getElementById('keys-list')
+    if (el) el.innerHTML = `<div class="empty"><span class="empty-emoji">⚠️</span><div class="empty-title">Could not load keys</div><div class="empty-sub">${e.message}</div></div>`
+  }
+}
+
+function renderKeys() {
+  const el = document.getElementById('keys-list'); if(!el)return
+  if (!S.keys.length) {
+    el.innerHTML = `<div class="empty"><span class="empty-emoji"></span><div class="empty-title">No keys yet</div><div class="empty-sub">Click "Create new key" above to generate your first API key</div></div>`
+    return
+  }
+  el.innerHTML = S.keys.map(k=>`
+    <div class="key-card">
+      <div class="key-card-top">
+        <div class="key-card-name"> ${k.keyPrefix} <span class="badge ${k.status==='active'?'badge-green':k.status==='revoked'?'badge-red':'badge-amber'}">${k.status==='active'?' Active':k.status==='revoked'?' Revoked':' Rotated'}</span></div>
+      </div>
+      <div class="key-display">
+        <span class="key-display-text">${k.keyPrefix}••••••••••••••••••••••••</span>
+        <button class="key-copy-btn" onclick="toast('Full key was only shown when first created — use rotate to get a new one','')">Copy?</button>
+      </div>
+      <div class="key-meta">
+        <span class="key-meta-item"> Created ${new Date(k.createdAt).toLocaleDateString()}</span>
+        ${k.revokedAt?`<span class="key-meta-item"> Revoked ${new Date(k.revokedAt).toLocaleDateString()}</span>`:''}
+      </div>
+      ${k.status==='active'?`
+        <div class="key-actions">
+          <button class="btn btn-ghost" onclick="rotateKey('${k._id}')"> Rotate key</button>
+          <button class="btn btn-danger" onclick="revokeKey('${k._id}')"> Revoke key</button>
+        </div>`:''}`).join('')
+}
+
+async function generateKey() {
+  if (!S.apiId) return toast('No API found', 'bad')
+  try {
+    const d = await call(`/apis/${S.apiId}/keys`, { method:'POST' })
+    if (d.id && !d._id) d._id = d.id
+    S.newKeyVal = d.key; S.keys.unshift(d)
+    document.getElementById('key-modal-title').textContent = ' Your new API key is ready!'
+    document.getElementById('key-modal-sub').textContent   = 'Save this key somewhere safe — you can only see it now!'
+    document.getElementById('key-reveal-text').textContent = d.key
+    document.getElementById('key-modal').classList.add('open')
+    renderKeys()
+  } catch(e) { toast(e.message, 'bad') }
+}
+
+async function revokeKey(keyId) {
+  if (!confirm('Are you sure you want to revoke this key?\n\nIt will stop working immediately and cannot be undone.')) return
+  try {
+    await call(`/apis/${S.apiId}/keys/${keyId}`, { method:'DELETE' })
+    S.keys = S.keys.map(k=>k._id===keyId?{...k,status:'revoked',revokedAt:new Date()}:k)
+    renderKeys(); toast('Key revoked successfully ', 'good')
+  } catch(e) { toast(e.message, 'bad') }
+}
+
+async function rotateKey(keyId) {
+  if (!confirm('Rotate this key?\n\nA new key will be created. The old key will keep working for 5 more minutes so nothing breaks.')) return
+  try {
+    const d = await call(`/apis/${S.apiId}/keys/${keyId}/rotate`, { method:'POST' })
+    S.newKeyVal = d.key; await loadKeys()
+    document.getElementById('key-modal-title').textContent = ' Key rotated!'
+    document.getElementById('key-modal-sub').textContent   = 'Here is your new key. Your old key works for 5 more minutes.'
+    document.getElementById('key-reveal-text').textContent = d.key
+    document.getElementById('key-modal').classList.add('open')
+    toast('Key rotated — old key valid for 5 more minutes', 'good')
+  } catch(e) { toast(e.message, 'bad') }
+}
+
+function copyKey() {
+  if (S.newKeyVal) { navigator.clipboard?.writeText(S.newKeyVal).catch(()=>{}); toast('Key copied to clipboard! ', 'good') }
+}
+function closeKeyModal() { document.getElementById('key-modal').classList.remove('open') }
+
+async function loadInvoices() {
+  if (!S.apiId) return
+  try {
+    const invs = await call(`/billing/${S.apiId}/invoices`)
+    renderInvoices(invs)
+  } catch(e) {}
+}
+
+function renderInvoices(invs) {
+  const el = document.getElementById('invoices-list'); if(!el)return
+  if (!invs?.length) {
+    el.innerHTML = `<div class="empty"><span class="empty-emoji"></span><div class="empty-title">No invoices yet</div><div class="empty-sub">Click "Generate invoice" above to create your first one</div></div>`
+    return
+  }
+  el.innerHTML = invs.map(inv=>`
+    <div class="inv-card">
+      <div class="inv-hdr">
+        <div><div class="inv-id"> Invoice #${inv._id.slice(-8).toUpperCase()}</div><div class="inv-period">${inv.periodLabel||inv.period}</div></div>
+        <span class="badge ${inv.status==='paid'?'badge-green':'badge-amber'}">${inv.status==='paid'?' Paid':' Unpaid'}</span>
+      </div>
+      <table class="inv-table">
+        <tr><td>Your plan</td><td>${inv.plan}</td></tr>
+        <tr><td>Total requests made</td><td>${(inv.totalRequests||0).toLocaleString()}</td></tr>
+        <tr><td>Included in plan</td><td>${(inv.includedRequests||0).toLocaleString()}</td></tr>
+        <tr><td>Extra requests (billed)</td><td>${(inv.billableRequests||0).toLocaleString()}</td></tr>
+        <tr><td>Price per request</td><td>$${inv.ratePerRequest}</td></tr>
+        <tr><td><strong>Total to pay</strong></td><td><strong>$${(inv.amount||0).toFixed(4)}</strong></td></tr>
+      </table>
+      ${inv.status==='pending'
+        ?`<button class="pay-btn" onclick="payInvoice('${inv._id}',this)">💳 Pay $${(inv.amount||0).toFixed(4)} now</button>`
+        :`<button class="pay-btn" disabled>Paid ${inv.paidAt?'on '+new Date(inv.paidAt).toLocaleDateString():''}</button>`}
+    </div>`).join('')
+}
+
+async function generateInvoice() {
+  if (!S.apiId) return
+  try { await call(`/billing/${S.apiId}/invoices/generate`, { method:'POST' }); toast('Invoice created! ', 'good'); await loadInvoices() }
+  catch(e) { toast(e.message, 'bad') }
+}
+
+async function payInvoice(id, btn) {
+  btn.innerHTML = 'Processing payment...'
+  btn.disabled = true
+  try {
+    await call(`/billing/invoices/${id}/pay`, { method:'POST' })
+    toast('Payment successful! 🎉', 'good')
+    await loadInvoices(); await loadUsage()
+  } catch(e) { toast(e.message, 'bad'); btn.disabled=false; btn.innerHTML=' Try again' }
+}
+
+// Upgrade
+function showUpgradeModal(trigger, used, limit) {
+  selectedUpgradePlan = 'pro'
+  document.querySelectorAll('.uplan').forEach((c,i)=>c.classList.toggle('picked',i===0))
+  if (used!==undefined) {
+    document.getElementById('upgrade-msg').textContent = `You used ${used} of ${limit} free requests this month. Upgrade to keep going!`
+    document.getElementById('upgrade-alert-text').textContent = `Your API returned errors for ${used - limit} requests. Upgrading will fix this immediately.`
+  }
+  document.getElementById('upgrade-btn').textContent = '⚡ Upgrade to Pro now'
+  document.getElementById('upgrade-modal').classList.add('open')
+}
+function closeUpgradeModal() { document.getElementById('upgrade-modal').classList.remove('open') }
+function pickPlan(plan, el) {
+  selectedUpgradePlan = plan
+  document.querySelectorAll('.uplan').forEach(c=>c.classList.remove('picked'))
+  el.classList.add('picked')
+  document.getElementById('upgrade-btn').textContent = `⚡ Upgrade to ${plan.charAt(0).toUpperCase()+plan.slice(1)} now`
+}
+async function doUpgrade() {
+  const btn = document.getElementById('upgrade-btn')
+  btn.innerHTML = '<span class="spinner"></span> Upgrading...'
+  btn.disabled = true
+  try {
+    const d = await call('/upgrade', { method:'POST', body:JSON.stringify({ plan:selectedUpgradePlan }) })
+    S.plan = d.plan; S.rateLimit = d.rateLimit
+    toast('Plan upgraded to ' + d.plan + '! Your API is unblocked ', 'good')
+    closeUpgradeModal(); await loadDash()
+  } catch(e) { toast(e.message, 'bad'); btn.disabled=false; btn.innerHTML='⚡ Try again' }
+}
+
+// Admin
+async function loadAdmin() {
+  try {
+    const s = await call('/admin/stats')
+    document.getElementById('ad-users').textContent = s.users
+    document.getElementById('ad-keys').textContent  = s.activeKeys
+    document.getElementById('ad-reqs').textContent  = s.requestsToday.toLocaleString()
+    document.getElementById('ad-rev').textContent   = '$'+(s.pendingRevenue||0).toFixed(2)
+  } catch(e){}
+
+  try {
+    const users = await call('/admin/users')
+    const el = document.getElementById('admin-users-list')
+    el.innerHTML = !users.length
+      ? `<div class="empty"><span class="empty-emoji"></span><div class="empty-title">No users yet</div></div>`
+      : users.map(u=>`
+        <div class="user-card" id="ucard-${u._id}">
+          <div class="user-card-top">
+            <div class="user-info">
+              <div class="user-av">${u.name[0].toUpperCase()}</div>
+              <div><div class="user-name">${u.name}</div><div class="user-email">${u.email}</div></div>
+            </div>
+            <div class="user-stats">
+              <div class="ustat"><div class="ustat-v">${u.activeKeys||0}</div><div class="ustat-l">keys</div></div>
+              <div class="ustat"><div class="ustat-v" style="color:var(--amber)">$${(u.amountDue||0).toFixed(2)}</div><div class="ustat-l">due</div></div>
+              <span class="badge ${{enterprise:'badge-purple',pro:'badge-blue',free:'badge-amber'}[u.plan]||'badge-amber'}">${{enterprise:' Enterprise',pro:' Pro',free:' Free'}[u.plan]||u.plan}</span>
+            </div>
+          </div>
+          <div class="user-limit-row">
+            <span class="user-limit-label"> Free request limit:</span>
+            <input class="limit-input" id="lim-${u._id}" type="number" value="${u.rateLimit||1000}" min="1" max="1000000">
+            <span style="font-size:12px;color:var(--text3)">requests/month</span>
+            <button class="btn btn-ghost" style="margin-left:auto" onclick="saveLimit('${u._id}','${u.name}')"> Save limit</button>
+          </div>
+          <div class="user-actions">
+            <div style="font-size:12px;color:var(--text3);align-self:center">When this limit is reached, the user sees an upgrade prompt automatically</div>
+            <button class="btn btn-danger" style="margin-left:auto" onclick="deleteUser('${u._id}','${u.name}')"> Delete user</button>
+          </div>
+        </div>`).join('')
+  } catch(e){}
+
+  try {
+    const keys = await call('/admin/keys')
+    document.getElementById('admin-keys-tbody').innerHTML = !keys.length
+      ? `<tr><td colspan="5"><div class="empty"><span class="empty-emoji"></span><div class="empty-title">No keys yet</div></div></td></tr>`
+      : keys.map(k=>`<tr>
+          <td class="mono"> ${k.keyPrefix}</td>
+          <td>${k.owner?.email||'—'}</td>
+          <td><span class="badge ${{enterprise:'badge-purple',pro:'badge-blue',free:'badge-amber'}[k.api?.plan]||'badge-amber'}">${k.api?.plan||'—'}</span></td>
+          <td><span class="badge ${k.status==='active'?'badge-green':'badge-red'}">${k.status==='active'?' Active':' Revoked'}</span></td>
+          <td style="color:var(--text3)">${new Date(k.createdAt).toLocaleDateString()}</td>
+        </tr>`).join('')
+  } catch(e){}
+
+  try {
+    const invs = await call('/admin/invoices')
+    document.getElementById('admin-inv-tbody').innerHTML = !invs.length
+      ? `<tr><td colspan="6"><div class="empty"><span class="empty-emoji"></span><div class="empty-title">No invoices yet</div></div></td></tr>`
+      : invs.map(i=>`<tr>
+          <td class="mono">#${i._id.slice(-8).toUpperCase()}</td>
+          <td>${i.owner?.email||'—'}</td>
+          <td><span class="badge badge-blue">${i.plan}</span></td>
+          <td style="font-weight:700">$${(i.amount||0).toFixed(4)}</td>
+          <td><span class="badge ${i.status==='paid'?'badge-green':'badge-amber'}">${i.status==='paid'?' Paid':' Unpaid'}</span></td>
+          <td style="color:var(--text3)">${i.periodLabel||i.period}</td>
+        </tr>`).join('')
+  } catch(e){}
+}
+
+async function saveLimit(userId, name) {
+  const v = parseInt(document.getElementById('lim-'+userId).value)
+  if (!v||v<1) return toast('Please enter a valid number', 'bad')
+  try {
+    await call(`/admin/users/${userId}/limit`, { method:'PATCH', body:JSON.stringify({ rateLimit:v }) })
+    toast(` Limit for ${name} set to ${v.toLocaleString()} requests/month`, 'good')
+  } catch(e) { toast(e.message, 'bad') }
+}
+
+async function deleteUser(userId, name) {
+  if (!confirm(`Delete ${name}'s account?\n\nThis will permanently delete:\n• Their account\n• All their API keys\n• All their usage history\n• All their invoices\n\nThis cannot be undone.`)) return
+  try {
+    await call(`/admin/users/${userId}`, { method:'DELETE' })
+    document.getElementById('ucard-'+userId)?.remove()
+    toast(`User "${name}" deleted `, 'good')
+    const s = await call('/admin/stats')
+    document.getElementById('ad-users').textContent = s.users
+    document.getElementById('ad-keys').textContent  = s.activeKeys
+  } catch(e) { toast(e.message, 'bad') }
+}
+
+// Navigation
+function showPage(p) {
+  document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'))
+  document.getElementById('page-'+p).classList.add('active')
+  updateTopbar()
+}
+function updateTopbar() {
+  const el = document.getElementById('topbar-right')
+  if (S.user) {
+    const n = S.user.name||'User'
+    el.innerHTML = `<span class="topbar-user">Hi, ${n}!</span><div class="avatar" title="${S.user.email||''}">${n[0].toUpperCase()}</div><button class="nav-link" onclick="logout()">Log out</button>`
+  } else {
+    el.innerHTML = `<button class="nav-link" onclick="showPage('login')">Log in</button><button class="btn-nav" onclick="showPage('signup')">Get started free →</button>`
+  }
+}
+function goTab(tab, btn) {
+  document.querySelectorAll('#page-dashboard .slink').forEach(x=>x.classList.remove('on'))
+  document.querySelectorAll('#page-dashboard .dash-section').forEach(x=>x.classList.remove('on'))
+  btn.classList.add('on'); document.getElementById('tab-'+tab).classList.add('on')
+  if (tab==='usage') loadUsage()
+  if (tab==='billing') loadInvoices()
+}
+function goAdmin(tab, btn) {
+  document.querySelectorAll('#page-admin .slink').forEach(x=>x.classList.remove('on'))
+  document.querySelectorAll('#page-admin .dash-section').forEach(x=>x.classList.remove('on'))
+  btn.classList.add('on'); document.getElementById('atab-'+tab).classList.add('on')
+  if (tab==='users') loadAdmin()
+}
+
+// Auto-login
+window.addEventListener('load', async()=>{
+  const token = localStorage.getItem('accessToken')
+  if (!token) return
+  try {
+    const apis = await call('/apis')
+    if (apis.length) { S.apiId=apis[0]._id; S.plan=apis[0].plan; S.rateLimit=apis[0].rateLimit||1000 }
+    const p = JSON.parse(atob(token.split('.')[1]))
+    S.user = { userId:p.userId, role:p.role, name:'User', email:'' }
+    if (p.role==='ADMIN') { await loadAdmin(); showPage('admin') }
+    else { await loadDash(); showPage('dashboard') }
+  } catch(e) { localStorage.removeItem('accessToken'); localStorage.removeItem('refreshToken') }
+})
+
+// Auto-show upgrade modal when API returns 429 + limitReached
+const _f = window.fetch
+window.fetch = async (...a) => {
+  const r = await _f(...a)
+  if (r.status===429) {
+    r.clone().json().then(d=>{ if(d.limitReached) showUpgradeModal('api', d.used, d.limit) }).catch(()=>{})
+  }
+  return r
+}
+</script>
+</body>
+</html>
